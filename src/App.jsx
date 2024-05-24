@@ -13,11 +13,11 @@ function App() {
   return (
     <div>
       <Navbar/>
-      <Agcaddy/>
-      {/* <Routes>
+      
+      <Routes>
         <Route path="/" element={<User />} />
         <Route path="/create" element={<UserCreate />} />
-      </Routes> */}
+      </Routes>
     </div>
   )
 }

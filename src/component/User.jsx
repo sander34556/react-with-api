@@ -13,6 +13,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
+import { ButtonGroup } from '@mui/material';
 
 
 
@@ -20,17 +21,44 @@ export default function User() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        fetch("https://www.melivecode.com/api/users")
-          .then(res => res.json())
-          .then(
-            (result) => {
-             
-              setItems(result);
-            }
-          )
-      }, [])
-    
+       UserGet();
+    }, [])
 
+    const UserGet = () =>{
+        fetch("https://www.melivecode.com/api/users")
+        .then(res => res.json())
+        .then(
+          (result) => {
+            setItems(result);
+          }
+        )
+    }
+    
+      const UserDelete = id =>{
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        
+        const raw = JSON.stringify({
+          "id": id
+        });
+        
+        const requestOptions = {
+          method: "DELETE",
+          headers: myHeaders,
+          body: raw,
+          redirect: "follow"
+        };
+        
+        fetch("https://www.melivecode.com/api/users/delete", requestOptions)
+          .then((response) => response.json())
+          .then((result) => {
+            alert(result['message'])
+            if(result['status']==='ok'){
+                UserGet();
+            }
+          })
+          .catch((error) => console.error(error));
+      }
 
 
   return (
@@ -79,7 +107,12 @@ export default function User() {
                             <TableCell align="left">{row.fname}</TableCell>
                             <TableCell align="left">{row.lname}</TableCell>
                             <TableCell align="left">{row.username}</TableCell>
-                            <TableCell align="left"></TableCell>
+                            <TableCell align="right">
+                                <ButtonGroup variant="outlined" aria-label="Basic button group">
+                                    <Button>Edit</Button>
+                                    <Button onClick={()=>UserDelete(row.id)}>Del</Button>
+                                </ButtonGroup>
+                            </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
